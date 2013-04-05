@@ -1,13 +1,16 @@
 %define debug_package %{nil}
+%define gcc_version 4.5.4
+%define pkg_suffix 454
+%define moz_release 0moz1
 %define mpc_version 0.8.1
 %define mpfr_version 2.4.2
 %define gmp_version 5.0.1
-%define gcc_prefix /tools/gcc-4.5-0moz4
+%define gcc_prefix /tools/gcc-%{gcc_version}-%{moz_release}
 
-Name: gcc45_0moz4
+Name: gcc%{pkg_suffix}_%{moz_release}
 Summary: An interpreted, interactive, object-oriented programming language.
-Version: 4.5.2
-Release: 0moz4
+Version: %{gcc_version}
+Release: %{moz_release}
 License: GPL
 Group: Development/Languages
 Source: http://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.bz2
@@ -21,6 +24,11 @@ Patch2: r159628-r163231-r171807.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 Autoprov: 0
 Autoreq: 0
+
+BuildRequires: m4
+%ifarch x86_64
+BuildRequires: glibc-devel(x86-32)
+%endif
 
 # manually specify 'Requires' so we don't require package-internal libs.
 %ifarch x86_64
@@ -50,28 +58,10 @@ Requires: libdl.so.2()(64bit)
 Requires: libdl.so.2(GLIBC_2.0)
 Requires: libdl.so.2(GLIBC_2.1)
 Requires: libdl.so.2(GLIBC_2.2.5)(64bit)
-#Requires: libgcc_s.so.1
-#Requires: libgcc_s.so.1()(64bit)
-#Requires: libgcc_s.so.1(GCC_3.0)
-#Requires: libgcc_s.so.1(GCC_3.0)(64bit)
-#Requires: libgcc_s.so.1(GCC_3.3)
-#Requires: libgcc_s.so.1(GCC_3.3)(64bit)
-#Requires: libgcc_s.so.1(GCC_4.2.0)
-#Requires: libgcc_s.so.1(GCC_4.2.0)(64bit)
-#Requires: libgcc_s.so.1(GLIBC_2.0)
-#Requires: libgmp.so.10()(64bit)
-#Requires: libgomp.so.1
-#Requires: libgomp.so.1()(64bit)
 Requires: libm.so.6
 Requires: libm.so.6()(64bit)
 Requires: libm.so.6(GLIBC_2.0)
 Requires: libm.so.6(GLIBC_2.2.5)(64bit)
-#Requires: libmpc.so.2()(64bit)
-#Requires: libmpfr.so.1()(64bit)
-#Requires: libmudflap.so.0
-#Requires: libmudflap.so.0()(64bit)
-#Requires: libmudflapth.so.0
-#Requires: libmudflapth.so.0()(64bit)
 Requires: libpthread.so.0
 Requires: libpthread.so.0()(64bit)
 Requires: libpthread.so.0(GLIBC_2.0)
@@ -83,10 +73,6 @@ Requires: librt.so.1
 Requires: librt.so.1()(64bit)
 Requires: librt.so.1(GLIBC_2.2)
 Requires: librt.so.1(GLIBC_2.2.5)(64bit)
-#Requires: libssp.so.0
-#Requires: libssp.so.0()(64bit)
-#Requires: libstdc++.so.6
-#Requires: libstdc++.so.6()(64bit)
 Requires: rpmlib(CompressedFileNames) <= 3.0.4-1
 Requires: rpmlib(PartialHardlinkSets) <= 4.0.4-1
 Requires: rpmlib(PayloadFilesHavePrefix) <= 4.0-1
@@ -109,27 +95,14 @@ Requires: libc.so.6(GLIBC_2.7)
 Requires: libdl.so.2
 Requires: libdl.so.2(GLIBC_2.0)
 Requires: libdl.so.2(GLIBC_2.1)
-#Requires: libgcc_s.so.1
-#Requires: libgcc_s.so.1(GCC_3.0)
-#Requires: libgcc_s.so.1(GCC_3.3)
-#Requires: libgcc_s.so.1(GCC_4.2.0)
-#Requires: libgcc_s.so.1(GLIBC_2.0)
-#Requires: libgmp.so.10
-#Requires: libgomp.so.1
 Requires: libm.so.6
 Requires: libm.so.6(GLIBC_2.0)
-#Requires: libmpc.so.2
-#Requires: libmpfr.so.1
-#Requires: libmudflap.so.0
-#Requires: libmudflapth.so.0
 Requires: libpthread.so.0
 Requires: libpthread.so.0(GLIBC_2.0)
 Requires: libpthread.so.0(GLIBC_2.1)
 Requires: libpthread.so.0(GLIBC_2.3.4)
 Requires: librt.so.1
 Requires: librt.so.1(GLIBC_2.2)
-#Requires: libssp.so.0
-#Requires: libstdc++.so.6
 Requires: rpmlib(CompressedFileNames) <= 3.0.4-1
 Requires: rpmlib(PartialHardlinkSets) <= 4.0.4-1
 Requires: rpmlib(PayloadFilesHavePrefix) <= 4.0-1
@@ -193,8 +166,12 @@ echo rm -fr $RPM_BUILD_ROOT
 %{gcc_prefix}
 
 %changelog
+* Thu Apr 04 2013 Rail Aliiev <rail@mozilla.com>
+ - New upstream version
+
 * Wed Jan 30 2013 John Hopkins <jhopkins@mozilla.com>
 - Build gcc with --disable-gnu-unique-object
 - Manually specify Requires, remove all Provides.
+
 * Tue Jun 01 2010 Rail Aliev <rail@mozilla.com>
 - Initial spec
